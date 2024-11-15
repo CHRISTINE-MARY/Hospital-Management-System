@@ -26,7 +26,9 @@ public class HospitalManagementSystem {
                 System.out.println("2. View Patient");
                 System.out.println("3. View Doctor");
                 System.out.println("4. Book Appointment");
-                System.out.println("5. Exit");
+                System.out.println("5. Delete Patient");
+                System.out.println("6. Edit appointment");
+                System.out.println("7. Exit");
                 System.out.println("Enter your choice");
                 int choice=sc.nextInt();
                 switch(choice){
@@ -50,7 +52,15 @@ public class HospitalManagementSystem {
                         System.out.println();
                         return;
                     case 5:
+                        System.out.println("Enter Patient ID");
+                        int patientID=sc.nextInt();
+                        patient.deletePatient(patientID);
                         return;
+                    case 6:
+                        updateAppointment(patient,doctor,conn,sc);
+                    case 7:
+                        return;
+
                     default:
                         System.out.println("Enter valid choice");
                 }
@@ -115,6 +125,33 @@ public class HospitalManagementSystem {
             e.printStackTrace();
         }
         return false;
+    }
+    public static void updateAppointment(Patient patient,Doctor doctor,Connection conn,Scanner sc){
+        System.out.println("Enter Patient ID: ");
+        int patientID=sc.nextInt();
+        System.out.println("Enter Doctor ID: ");
+        int doctorID=sc.nextInt();
+        System.out.println("Enter new appointment date (YYYY-MM-DD): ");
+        String appointmentDate=sc.next();
+        if(patient.getPatientById(patientID) && doctor.getDoctorById(doctorID)){
+            String query="update appointments set appointment_date=? where patient_id=? and doctor_id=?";
+            try{
+                PreparedStatement ps= conn.prepareStatement(query);
+                ps.setString(1, appointmentDate);
+                ps.setInt(2, patientID);
+                ps.setInt(3, doctorID);
+                int affectedRows=ps.executeUpdate();
+                if(affectedRows>0){
+                    System.out.println("Appointment edited Successfully");
+                }
+                else{
+                    System.out.println("Appointment Editing Failed");
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
 }

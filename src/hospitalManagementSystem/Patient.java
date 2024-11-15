@@ -83,5 +83,22 @@ public class Patient {
         }
         return false;
     }
+    public void deletePatient(int id){
+        String query = "delete from patients where id=?";
+        try{
+            PreparedStatement ps= conn.prepareStatement(query);
+            ps.setInt(1,id);
+            int affectedRows=ps.executeUpdate();
+            if(affectedRows>0){
+                System.out.println("Patient deleted successfully");
+            }
+            else{
+                System.out.println("Patient not deleted");
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
 
